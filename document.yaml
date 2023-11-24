@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  title: Doctor Appointment Service
+  description: RESTful API for managing doctor appointments
+  version: 1.0.0
+
+paths:
+  /appointments:
+    post:
+      summary: Create a new appointment
+      requestBody:
+        description: New appointment details
+        required: true
+        content:
+          application/json:
+            example:
+              patient: Alex Carrey
+              service: Fysio Therapy
+              date: '2023-12-03'
+              time: '09:15'
+      responses:
+        '201':
+          description: Appointment created successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                patient:  Alex Carrey
+                service: Fysio Therapy
+                date: '2023-12-03'
+                time: '09:15'
+    get:
+      summary: Retrieve all appointments
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  patient: Alex Carrey
+                  service: General Checkup
+                  date: '2023-12-01'
+                  time: '10:00'
+                - id: 2
+                  patient: Alex Stuart
+                  service: Dental Cleaning
+                  date: '2023-12-02'
+                  time: '15:30'
+  /appointments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Appointment ID
+        schema:
+          type: integer
+          format: int64
+    get:
+      summary: Retrieve a specific appointment by ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                id: 1
+                patient: John Snow
+                service: General Checkup
+                date: '2023-12-01'
+                time: '10:00'
+        '404':
+          description: Appointment not found
+    put:
+      summary: Update an existing appointment
+      requestBody:
+        description: Updated appointment details
+        required: true
+        content:
+          application/json:
+            example:
+              patient: Updated Patient
+              service: Specialty Consultation
+              date: '2023-12-03'
+              time: '09:30'
+      responses:
+        '200':
+          description: Appointment updated successfully
+          content:
+            application/json:
+              example:
+                id: 3
+                patient: Updated Patient
+                service: Updated Service
+                date: '2023-12-03'
+                time: '09:30'
+        '404':
+          description: Appointment not found
+    delete:
+      summary: Delete an existing appointment
+      responses:
+        '200':
+          description: Appointment deleted successfully
+        '404':
+          description: Appointment not found
+  /appointments/byService:
+    get:
+      summary: Retrieve appointments by service
+      parameters:
+        - name: service
+          in: query
+          required: true
+          description: Service provided by the hospital
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  patient: Alex Carrey
+                  service: General Checkup
+                  date: '2023-12-01'
+                  time: '10:00'
+        '404':
+          description: Appointments not found for the specified service
+  /appointments/byName:
+    get:
+      summary: Retrieve appointments by patient name
+      parameters:
+        - name: patient
+          in: query
+          required: true
+          description: Customer name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - id: 1
+                  patient: Alex Stuart
+                  service: General Checkup
+                  date: '2023-12-01'
+                  time: '10:00'
+        '404':
+          description: Appointments not found for the specified customer name
+  /appointments/byTimePeriod:
+    get:
+      summary: Retrieve appointments by time period
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: Start date of the period (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: startTime
+          in: query
+          required: true
+          description: Start time of the period (HH:mm)
+          schema:
+            type: string
+            format: time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - id: 2
+                  patient: Alex Stuart
+                  service: Dental Cleaning
+                  date: '2023-12-02'
+                  time: '15:30'
+        '404':
+          description: Appointments not found for the specified time period
